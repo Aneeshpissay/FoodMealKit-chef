@@ -1,0 +1,18 @@
+body {
+  background-color: #e9e9e9;
+}
+
+@font-face {
+  font-family: 'AirbnbCereal-Bold';
+  src: local('AirbnbCereal-Bold'), url(./assets/fonts/AirbnbCereal-Bold.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'AirbnbCereal-Light';
+  src: local('AirbnbCereal-Light'), url(./assets/fonts/AirbnbCereal-Light.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'AirbnbCereal-Medium';
+  src: local('AirbnbCereal-Medium'), url(./assets/fonts/AirbnbCereal-Medium.ttf) format('truetype');
+}

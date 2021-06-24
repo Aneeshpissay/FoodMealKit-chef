@@ -1,0 +1,3 @@
+export const chefWhite = 'https://res.cloudinary.com/aneesh-pissay/image/upload/v1620544080/Food%20Meal%20Kit%20Blog/chef-white_mkqpfp.jpg';
+export const chefGrey =  'https://res.cloudinary.com/aneesh-pissay/image/upload/v1620544080/Food%20Meal%20Kit%20Blog/chef-grey_c9jgtd.jpg';
+export const chefDark = 'https://res.cloudinary.com/aneesh-pissay/image/upload/v1620544080/Food%20Meal%20Kit%20Blog/chef-dark_ez8di3.jpg';
