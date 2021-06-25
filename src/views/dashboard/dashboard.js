@@ -7,7 +7,7 @@ const Dashboard = () => {
     return (
         <div>
             <BoldText>Published Recipes</BoldText>
-            <Grid container spacing={24}>
+            <Grid container>
                 <Grid xs={12} sm={6} md={4} item>
                     <Link style={{textDecoration: 'none'}} to="/recipe/1">
                         <RecipeCard/>
@@ -27,7 +27,7 @@ const Dashboard = () => {
                 </Grid>
             </Grid>
             <BoldText>Saved Recipes</BoldText>
-            <Grid container spacing={24}>
+            <Grid container>
                 <Grid xs={12} sm={6} md={4} item>
                     <RecipeCard saved/>
                 </Grid>

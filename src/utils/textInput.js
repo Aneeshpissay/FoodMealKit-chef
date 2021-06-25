@@ -48,7 +48,8 @@ export const TextInput = (props) => {
         style,
         labelName,
         multiline,
-        placeholder
+        placeholder,
+        labelWidth
     } = props;
     const outlinedInputClasses = useOutlinedInputStyles();
     const classes = useStyles();
@@ -57,14 +58,14 @@ export const TextInput = (props) => {
                 <FormControl fullWidth className={noClassName ? null : classes.margin} variant="outlined">
                     <InputLabel className={classes.inputLabel} htmlFor={labelName}>{labelName}</InputLabel>
                     <OutlinedInput
-                        id="search"
+                        id={labelName}
                         value={search}
                         classes={outlinedInputClasses}
                         onChange={onChange}
                         multiline={multiline}
                         startAdornment={startAdornment}
                         endAdornment={endAdornment}
-                        labelWidth={60}
+                        labelWidth={labelWidth}
                         placeholder={placeholder}
                     />
                 </FormControl>
