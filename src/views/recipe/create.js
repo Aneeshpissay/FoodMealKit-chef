@@ -5,6 +5,7 @@ import { ImageUpload, VideoUpload } from '../../utils/upload';
 import { TextInput } from '../../utils/textInput';
 import { Counter } from '../../utils/counter';
 import { ContainedButton } from '../../utils/button';
+import { Ingredients } from './ingredients';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -73,6 +74,7 @@ const CreateRecipe = () => {
                 <Counter step={step} setStep={setStep} />
                 <TextInput labelName="Cook Time" style={{margin: 0, width: 200}} placeholder="1 hr 30 mins" labelWidth={82}/>
                 <BoldText style={{marginLeft: 10}}>Ingredients</BoldText>
+                <Ingredients />
                 <ContainedButton variant="contained" style={{margin: 10}}>Add Ingredients</ContainedButton>
                 <BoldText style={{marginLeft: 10}}>Preparation</BoldText>
             {method.map((data,index)=>(
