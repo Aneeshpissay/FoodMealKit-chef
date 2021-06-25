@@ -2,6 +2,8 @@ import React from 'react';
 import { grey, primary } from "../constants/Colors"
 import { makeStyles, IconButton, Grid } from '@material-ui/core';
 import { BoldText } from '../utils/text';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import VideocamIcon from '@material-ui/icons/Videocam';
 
 const useStyles = makeStyles((theme) => ({
     input: {
@@ -16,16 +18,16 @@ export const ImageUpload = (props) => {
     const {
         uploadFile,
         text,
-        icon
+        id
     } = props;
     const classes = useStyles();
     return (
         <div style={{padding: 50, backgroundColor: grey}}>
-        <input accept="image/*" className={classes.input} id="image" type="file" multiple onChange={uploadFile} />
-        <label htmlFor="image">
+        <input accept="image/*" className={classes.input} id={id} type="file" multiple onChange={uploadFile} />
+        <label htmlFor={id}>
                 <Grid container justify="center">
                     <IconButton color="primary" className={classes.button} component="span">
-                        {icon}
+                        <PhotoCamera />
                     </IconButton>
                     <BoldText style={{color: primary, alignSelf: 'center'}}>{text}</BoldText>
                 </Grid>
@@ -37,9 +39,8 @@ export const ImageUpload = (props) => {
 export const VideoUpload = (props) => {
     const {
         uploadFile,
-        text,
-        icon
-    } = props;
+        text
+        } = props;
     const classes = useStyles();
     return (
         <div style={{padding: 50, backgroundColor: grey}}>
@@ -47,7 +48,7 @@ export const VideoUpload = (props) => {
         <label htmlFor="video">
                 <Grid container justify="center">
                     <IconButton color="primary" className={classes.button} component="span">
-                        {icon}
+                        <VideocamIcon />
                     </IconButton>
                     <BoldText style={{color: primary, alignSelf: 'center'}}>{text}</BoldText>
                 </Grid>
