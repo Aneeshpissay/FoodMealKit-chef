@@ -49,7 +49,8 @@ export const TextInput = (props) => {
         labelName,
         multiline,
         placeholder,
-        labelWidth
+        labelWidth,
+        type
     } = props;
     const outlinedInputClasses = useOutlinedInputStyles();
     const classes = useStyles();
@@ -62,6 +63,7 @@ export const TextInput = (props) => {
                         value={search}
                         classes={outlinedInputClasses}
                         onChange={onChange}
+                        type={type}
                         multiline={multiline}
                         startAdornment={startAdornment}
                         endAdornment={endAdornment}
