@@ -61,6 +61,7 @@
       "last 1 safari version"
     ]
   },
+  "proxy": "https://food-meal-kit-api.herokuapp.com",
   "devDependencies": {
     "concurrently": "^6.2.0",
     "cross-env": "^7.0.3",

@@ -1,47 +1,57 @@
-import { Grid, Paper, Divider } from '@material-ui/core';
+import { Grid, Paper, Divider, Backdrop, CircularProgress, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { OutlinedButton } from '../../utils/button';
 import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import { BoldText, LightText, MediumText } from '../../utils/text';
-import { grey, primary } from '../../constants/Colors';
+import { primary } from '../../constants/Colors';
 import { Video } from '../../utils/video';
 import StopIcon from '@material-ui/icons/Stop';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { RECIPE_BY_ID } from '../../api';
+import { EnhancedTable } from '../../utils/table';
+
+const useStyles = makeStyles((theme) => ({
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: primary,
+    },
+}));
 
 const RecipeView = () => {
+    const columns = [
+        { id: 'name', label: 'Name' },
+        { id: 'quantity', label: 'Quantity' },
+        { id: 'measurement', label: 'Measurement' },
+    ];
+    const classes = useStyles();
+    const params = useParams();
+    const id = params?.id;
+    const [recipeView, setRecipeView] = React.useState({});
+    const [loading, setLoading] = React.useState(false);
+    React.useEffect(() => {
+        setLoading(true);
+        axios.get(RECIPE_BY_ID(id)).then((res) => {
+            setRecipeView(res.data)
+        }).finally(() => setLoading(false));
+    },[id]);
     const [watching, setWatching] = React.useState(false);
-    const data = [ {
-        "name": "Azuki Bean",
-        "icon": "https://cdn.iconscout.com/icon/premium/png-512-thumb/azuki-beans-3418892-2850459.png"
-      },
-      {
-        "name": "Basil",
-        "icon": "https://cdn.iconscout.com/icon/premium/png-256-thumb/basil-3138588-2609955.png"
-      },
-      {
-        "name": "Beet",
-        "icon": "https://cdn.iconscout.com/icon/premium/png-512-thumb/beet-3138501-2609880.png"
-      },
-      {
-        "name": "Black Bean",
-        "icon": "https://i0.wp.com/cdn-prod.medicalnewstoday.com/content/images/articles/289/289934/black-beans.jpg?w=1155&h=982"
-      },
-      {
-        "name": "Black-Eyed Pea",
-        "icon": "https://images-na.ssl-images-amazon.com/images/I/61E6hkjSoeL._SL1160_.jpg"
-      }];
-      const prep = ['In a medium pot over medium heat, heat 1 tablespoon oil. Add garlic and cook until fragrant, 1 minute more. Add tomato paste and stir to coat onion and garlic. Add ground beef and cook, breaking up meat with a wooden spoon, until no longer pink, 6 minutes. Drain fat.', 'In a medium pot over medium heat, heat 1 tablespoon oil. Add onion and cook until soft, 5 minutes. Add garlic and cook until fragrant, 1 minute more. Add tomato paste and stir to coat onion and garlic. Add ground beef and cook, breaking up meat with a wooden spoon, until no longer pink, 6 minutes. Drain fat.', 'In a medium pot over medium heat, heat 1 tablespoon oil. Add onion and cook until soft, 5 minutes. Add garlic and cook until fragrant, 1 minute more. Add tomato paste and stir to coat onion and garlic. Add ground beef and cook, breaking up meat with a wooden spoon, until no longer pink, 6 minutes. Drain fat.']
     return (
+        <div>
+           {loading ?  <Backdrop className={classes.backdrop} open={loading}>
+                <CircularProgress color="inherit" />
+            </Backdrop> : 
         <Grid container>
             {watching ? 
                 <Grid container justify="center">
                     <Video url="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
                 </Grid>
             : 
-            <Grid container justify="center">
-                <img src="https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg?quality=90&resize=960,872" alt="" />
-            </Grid>}
+            recipeView.recipeImage ? <Grid container justify="center">
+            <img src={recipeView.recipeImage[0].url} width={500} height={500} alt={recipeView.title} />
+        </Grid> : null}
             <Paper>
                 <Grid container justify="center" style={{marginTop: 10}}>
                     <OutlinedButton variant="outlined" color="secondary" startIcon={watching ? <StopIcon /> : <PlayArrowIcon />} onClick={() => setWatching(!watching)}>
@@ -49,7 +59,7 @@ const RecipeView = () => {
                     </OutlinedButton>
                 </Grid>
                 <Grid container>
-                    <BoldText style={{marginLeft: 10, marginTop: 10, fontSize: 20}}>Paneer Butter Masala</BoldText>
+                    <BoldText style={{marginLeft: 10, marginTop: 10, fontSize: 20}}>{recipeView.title}</BoldText>
                     <OutlinedButton style={{marginRight: 10, marginTop: 10, marginLeft: 'auto'}} variant="outlined" color="secondary" startIcon={<PrintIcon />}>
                         Print
                     </OutlinedButton>
@@ -57,36 +67,30 @@ const RecipeView = () => {
                         Share
                     </OutlinedButton>
                 </Grid>
-                <LightText style={{marginTop: 20, marginLeft: 10}}>This heavenly dish is an all time favourite north indian dish which is nothing but soft paneer dipped in a rich, sweet,creamy tomato based gravy with a subtle blend of spices.</LightText>
+                <LightText style={{marginTop: 20, marginLeft: 10}}>{recipeView.description}</LightText>
                 <Divider style={{marginTop: 10, marginLeft: 10, marginRight: 10}} />
-                <BoldText style={{marginTop: 10, marginLeft: 10, fontSize: 18}}>
-                    Ingredients
-                </BoldText>
                 <Grid style={{marginTop: 10}}>
-                {data.map((ingredients, index) => (
-                    <Grid container key={index} direction="row" justify="flex-end" style={{marginLeft: 10, paddingRight: 5, paddingLeft: 5}}>
-                        <Grid container direction="row">
-                            <img src={ingredients.icon} style={{width: 35, height: 35}} alt={ingredients.name} />
-                            <BoldText style={{marginLeft: 10, alignSelf: 'center'}}>{ingredients.name}</BoldText>
-                        </Grid>
-                        <MediumText style={{alignSelf: 'center', marginRight: 10, backgroundColor: primary, color: grey, borderRadius: 5, padding: 5, marginTop: -30}}>1 cup</MediumText>
-                    </Grid>
-                ))}
-            </Grid>
+                    {recipeView?.ingredients?.length > 0 && <EnhancedTable title="Ingredients" data={recipeView.ingredients} columns={columns} />}
+                </Grid>
             <Divider style={{marginTop: 10, marginLeft: 10, marginRight: 10}} />
             <BoldText style={{marginTop: 10, marginLeft: 10, fontSize: 18}}>
                 Preparation
             </BoldText>
             <Grid container>
-            {prep.map((preparations, index) => (
+            {recipeView?.preparation?.map((preparation, index) => (
                 <Grid container direction="column" style={{ backgroundColor: primary, padding: 10, borderRadius: 10, margin: 10}} key={index}>
                     <BoldText style={{marginBottom: 10, fontSize: 20}}>Step {index + 1}</BoldText>
-                    <MediumText style={{marginBottom: 10}}>{preparations}</MediumText>
+                    <MediumText style={{marginBottom: 10}}>{preparation.method}</MediumText>
+                    {preparation?.stepImage?.map((stepImage, index) => (
+                        <img src={stepImage} key={index} alt="" width={200} height={200} />
+                    ))}
                 </Grid>
             ))}
             </Grid>
             </Paper>
         </Grid>
+        }
+        </div>
     )
 };
 

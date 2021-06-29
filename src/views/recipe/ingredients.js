@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -17,6 +17,10 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import { BoldText } from '../../utils/text';
 import { bold } from '../../constants/Font';
+import { Autocomplete } from '@material-ui/lab';
+import { TextField, withStyles, Paper } from '@material-ui/core';
+import { TextInput } from '../../utils/textInput';
+import { primary } from '../../constants/Colors';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -37,29 +41,93 @@ const tableIcons = {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
+
+const CustomTextField = withStyles({
+  root: {
+    '& label': {
+      color: primary,
+      fontFamily: bold
+    },
+    '& label.Mui-focused': {
+      color: primary,
+      fontFamily: bold
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: primary,
+      },
+      '&:hover fieldset': {
+        borderColor: primary,
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: primary,
+      },
+    },
+  },
+})(TextField);
+
 export const Ingredients = (props) => {
     const {
         ingredientsData,
-        setIngredientsData
-    } = props
-    const { useState } = React;
-  
-    const [columns, setColumns] = useState([
-      { title: 'Name', field: 'name' },
-      { title: 'Quantity', field: 'quantity' },
-      { title: 'Measurement', field: 'measurement' },
-    ]);
+        setIngredientsData,
+        data
+    } = props;
+    const [ingredientsName, setIngredientsName] = useState([]);
+    useEffect(() => {
+      let ingArr = [];
+      ingredientsData.map((ingredient) => {
+        return ingArr.push(ingredient.name);
+      })
+      setIngredientsName(ingArr);
+    }, [ingredientsData]);
+    const columns = [
+      { title: 'Ingredient Name', field: 'name', editComponent: props => (
+        <Autocomplete
+          id="Ingredients"
+          options={data}
+          getOptionDisabled={option => ingredientsName.includes(option.name)}
+          getOptionLabel={option => option.name}
+          renderOption={(option) => (
+            <React.Fragment>
+              <img src={option.icon} width={50} height={50} alt={option.name} />
+              {option.name}
+            </React.Fragment>
+          )}
+          renderInput={params => {
+            return (
+              <CustomTextField
+                {...params}
+                variant="outlined"
+                label="Ingredients"
+              />
+            );
+          }}
+          onChange={e => props.onChange(e.target.innerText)}
+        />
+      ) },
+      { title: 'Quantity', field: 'quantity', editComponent: props => (
+        <TextInput noClassName value={props.value} onChange={(e) => props.onChange(e.target.value)} labelName="Quantity" labelWidth={67}/>
+      ) },
+      { title: 'Measurement', field: 'measurement', editComponent: props => (
+        <TextInput noClassName value={props.value} onChange={(e) => props.onChange(e.target.value)} labelName="Measurement" labelWidth={105}/>
+      ) },
+    ];
     return (
       <MaterialTable
         title={<BoldText>Ingredients</BoldText>}
         columns={columns}
         data={ingredientsData}
         icons={tableIcons}
+        components={{
+          Container: props => <Paper {...props} elevation={0}/>
+        }}
+        localization={{body: {editRow: {deleteText: <BoldText style={{textTransform: 'none'}}>Are you sure you want to delete this row?</BoldText>}}}}
         options={{
             actionsColumnIndex: -1,
             sorting: true,
             rowStyle: { fontFamily: bold },
-            headerStyle: { fontFamily: bold }
+            headerStyle: { fontFamily: bold },
+            search: false
           }}
         editable={{
           onRowAdd: newData =>

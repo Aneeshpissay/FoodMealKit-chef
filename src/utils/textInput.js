@@ -41,7 +41,7 @@ const useOutlinedInputStyles = makeStyles(theme => ({
 export const TextInput = (props) => {
     const {
         onChange,
-        search,
+        value,
         startAdornment,
         endAdornment,
         noClassName,
@@ -60,7 +60,7 @@ export const TextInput = (props) => {
                     <InputLabel className={classes.inputLabel} htmlFor={labelName}>{labelName}</InputLabel>
                     <OutlinedInput
                         id={labelName}
-                        value={search}
+                        value={value}
                         classes={outlinedInputClasses}
                         onChange={onChange}
                         type={type}

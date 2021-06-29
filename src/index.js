@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// document.oncontextmenu = new Function("return false;");
 ReactDOM.render(
     <App />,
   document.getElementById('root')
