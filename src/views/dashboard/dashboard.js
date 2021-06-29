@@ -42,7 +42,7 @@ const Dashboard = () => {
                 <CircularProgress color="inherit" />
             </Backdrop> : 
             <div>
-            {published.length > 0 && <BoldText>Published Recipes</BoldText>}
+            {published?.length > 0 && <BoldText>Published Recipes</BoldText>}
             <Grid container>
                 {published.map((publish) => (
                     <Grid xs={12} sm={6} md={4} item>
