@@ -44,7 +44,7 @@ const Dashboard = () => {
             <div>
             {published?.length > 0 && <BoldText>Published Recipes</BoldText>}
             <Grid container>
-                {published.map((publish) => (
+                {published?.map((publish) => (
                     <Grid xs={12} sm={6} md={4} item>
                         <Link style={{textDecoration: 'none'}} to={`/recipe/${publish._id}`}>
                             <RecipeCard recipe={publish} />
@@ -54,7 +54,7 @@ const Dashboard = () => {
             </Grid>
             <BoldText>Saved Recipes</BoldText>
             <Grid container>
-                {saved.map((save) => (
+                {saved?.map((save) => (
                     <Grid xs={12} sm={6} md={4} item>
                         <Link style={{textDecoration: 'none'}} to={`/recipe/${save._id}`}>
                             <RecipeCard recipe={save} saved />
