@@ -5,7 +5,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import { BoldText, LightText, MediumText } from '../../utils/text';
-import { primary } from '../../constants/Colors';
+import { grey, primary } from '../../constants/Colors';
 import { Video } from '../../utils/video';
 import StopIcon from '@material-ui/icons/Stop';
 import { useParams } from 'react-router-dom';
@@ -84,7 +84,7 @@ const RecipeView = () => {
             </BoldText>
             <Grid container>
             {recipeView?.preparation?.map((preparation, index) => (
-                <Grid container direction="column" style={{ backgroundColor: primary, padding: 10, borderRadius: 10, margin: 10}} key={index}>
+                <Grid container direction="column" style={{ backgroundColor: grey, padding: 10, margin: 10}} key={index}>
                     <BoldText style={{marginBottom: 10, fontSize: 20}}>Step {index + 1}</BoldText>
                     <MediumText style={{marginBottom: 10}}>{preparation.method}</MediumText>
                     {preparation?.stepImage?.map((stepImage, index) => (

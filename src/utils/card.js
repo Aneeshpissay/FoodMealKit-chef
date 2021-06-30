@@ -1,9 +1,8 @@
 import React from 'react';
-import { Card, CardHeader, CardMedia, CardContent, Typography, makeStyles, Grid  } from '@material-ui/core';
+import { Card, CardHeader, CardMedia, CardContent, Typography, makeStyles  } from '@material-ui/core';
 import { orange } from '@material-ui/core/colors';
 import { grey } from '../constants/Colors';
 import { bold } from '../constants/Font';
-import { OutlinedButton } from './button';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
 
 export const RecipeCard = (props) => {
     const {
-        saved,
         recipe
     } = props;
     const classes = useStyles();
@@ -59,11 +57,6 @@ export const RecipeCard = (props) => {
                     {recipe.description}
                 </Typography>
             </CardContent>
-            {saved && 
-                <Grid container justify="center" style={{marginBottom: 10}}>
-                    <OutlinedButton variant="outlined">Publish</OutlinedButton>
-                </Grid>
-            }
             </Card>
     )
 }
