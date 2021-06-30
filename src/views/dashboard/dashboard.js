@@ -52,7 +52,7 @@ const Dashboard = () => {
                     </Grid>
                 ))}
             </Grid>
-            <BoldText>Saved Recipes</BoldText>
+            {saved?.length > 0 && <BoldText>Saved Recipes</BoldText>}
             <Grid container>
                 {saved?.map((save) => (
                     <Grid xs={12} sm={6} md={4} item>

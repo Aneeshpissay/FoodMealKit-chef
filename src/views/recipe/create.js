@@ -1,6 +1,6 @@
 import React from 'react';
 import { BoldText } from '../../utils/text';
-import { Paper, Divider, makeStyles, Grid, IconButton, CircularProgress, Backdrop } from '@material-ui/core';
+import { Paper, Divider, makeStyles, Grid, IconButton, CircularProgress, Backdrop, Snackbar } from '@material-ui/core';
 import { ImageUpload, VideoUpload } from '../../utils/upload';
 import { TextInput } from '../../utils/textInput';
 import { Counter } from '../../utils/counter';
@@ -12,6 +12,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 import { primary } from '../../constants/Colors';
 import { useHistory } from 'react-router-dom';
+import { Alert } from '@material-ui/lab'; 
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -113,40 +114,49 @@ const CreateRecipe = () => {
     const [cookTime, setCookTime] = React.useState('');
     const [price, setPrice] = React.useState(0);
     const [loading, setLoading] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
+    const [error, setError] = React.useState('');
     const saveRecipe = () => {
        setLoading(true);
-       if(ingredientsData.length > 1 && method.length > 1) {
-        let ingredientsArr = ingredientsData.map(r => {
-            const {tableData, ...record} = r;
-            return record;
-          });          
-        const dataValue = new FormData();
-        for(var i=0; i < recipeImage.length; i++) {
-            dataValue.append('recipeImage', recipeImage[i]);
+       if(recipeImage.length > 0 && recipeName.length > 4 && recipeDescription.length > 4 && cookTime.length > 0 && price.length > 0) {
+        if(ingredientsData.length > 1 && method.length > 1 ) {
+            let ingredientsArr = ingredientsData.map(r => {
+                const {tableData, ...record} = r;
+                return record;
+              });          
+            const dataValue = new FormData();
+            for(var i=0; i < recipeImage.length; i++) {
+                dataValue.append('recipeImage', recipeImage[i]);
+            }
+            for(var a=0; a < video.length; a++) {
+                dataValue.append('recipeVideo', video[a]);
+            }
+            dataValue.append('title', recipeName);
+            dataValue.append('description', recipeDescription);
+            dataValue.append('servings', step);
+            dataValue.append('cookTime', cookTime);
+            for(var j=0; j < ingredientsArr.length; j++) {
+                dataValue.append('ingredients', JSON.stringify(ingredientsArr[j]));
+            }
+            dataValue.append('price', price);
+            for(var k=0; k < method.length; k++) {
+                dataValue.append('preparation', JSON.stringify(method[k]));
+            }
+            axios.post(CREATE_RECIPE, dataValue).then((res) => {
+               history.push({
+                   pathname: '/dashboard',
+                   state: 'createdRecipe'
+               });
+           }).finally(() => setLoading(false));
         }
-        for(var a=0; a < video.length; a++) {
-            dataValue.append('recipeVideo', video[a]);
+        else {
+            setError('Please enter two or more ingredients and methods');
+            setOpen(true);
         }
-        dataValue.append('title', recipeName);
-        dataValue.append('description', recipeDescription);
-        dataValue.append('servings', step);
-        dataValue.append('cookTime', cookTime);
-        for(var j=0; j < ingredientsArr.length; j++) {
-            dataValue.append('ingredients', JSON.stringify(ingredientsArr[j]));
-        }
-        dataValue.append('price', price);
-        for(var k=0; k < method.length; k++) {
-            dataValue.append('preparation', JSON.stringify(method[k]));
-        }
-        axios.post(CREATE_RECIPE, dataValue).then((res) => {
-           history.push({
-               pathname: '/dashboard',
-               state: 'createdRecipe'
-           });
-       }).finally(() => setLoading(false));
        }
        else {
-        setLoading(false);
+            setError('Please select all the fields')
+            setOpen(true);
        }
     }
     const deleteMethod = (index) => {
@@ -154,11 +164,23 @@ const CreateRecipe = () => {
         values = method.filter((data, j) => j !== index);
         setMethod(values);
     }
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        setLoading(false);
+        setOpen(false);
+      };
     return (
         <div>
             <Backdrop className={classes.backdrop} open={loading}>
                 <CircularProgress color="inherit" />
             </Backdrop>
+            <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} bodyStyle={{backgroundColor: primary}} open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error">
+                   {error}
+                </Alert>
+            </Snackbar>
             <Grid container justify="space-between">
                 <BoldText style={{alignSelf: 'center'}}>Create Recipe</BoldText>
                 <ContainedButton variant="contained" onClick={saveRecipe}>Save</ContainedButton>

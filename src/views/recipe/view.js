@@ -46,17 +46,17 @@ const RecipeView = () => {
         <Grid container>
             {watching ? 
                 <Grid container justify="center">
-                    <Video url="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
+                    <Video url={recipeView?.recipeVideo?.url} />
                 </Grid>
             : 
             recipeView.recipeImage ? <Grid container justify="center">
             <img src={recipeView.recipeImage[0].url} width={500} height={500} alt={recipeView.title} />
         </Grid> : null}
-            <Paper>
+            <Paper style={{width: '100%'}}>
                 <Grid container justify="center" style={{marginTop: 10}}>
-                    <OutlinedButton variant="outlined" color="secondary" startIcon={watching ? <StopIcon /> : <PlayArrowIcon />} onClick={() => setWatching(!watching)}>
+                    {recipeView.recipeVideo && <OutlinedButton variant="outlined" color="secondary" startIcon={watching ? <StopIcon /> : <PlayArrowIcon />} onClick={() => setWatching(!watching)}>
                         {watching ? 'Stop Watching' : 'Watch Video'}
-                    </OutlinedButton>
+                    </OutlinedButton>}
                 </Grid>
                 <Grid container>
                     <BoldText style={{marginLeft: 10, marginTop: 10, fontSize: 20}}>{recipeView.title}</BoldText>
@@ -70,6 +70,12 @@ const RecipeView = () => {
                 <LightText style={{marginTop: 20, marginLeft: 10}}>{recipeView.description}</LightText>
                 <Divider style={{marginTop: 10, marginLeft: 10, marginRight: 10}} />
                 <Grid style={{marginTop: 10}}>
+                <BoldText style={{marginTop: 10, marginLeft: 10, fontSize: 18}}>
+                    Servings: {recipeView.servings}
+                </BoldText>
+                <BoldText style={{marginTop: 10, marginLeft: 10, fontSize: 18}}>
+                    Cook Time: {recipeView.cookTime}
+                </BoldText>
                     {recipeView?.ingredients?.length > 0 && <EnhancedTable title="Ingredients" data={recipeView.ingredients} columns={columns} />}
                 </Grid>
             <Divider style={{marginTop: 10, marginLeft: 10, marginRight: 10}} />
