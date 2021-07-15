@@ -1,18 +1,21 @@
 import React from 'react';
 import { BoldText } from '../../utils/text';
-import { Paper, Divider, makeStyles, Grid, IconButton, CircularProgress, Backdrop, Snackbar } from '@material-ui/core';
+import { Paper, Divider, makeStyles, Grid, IconButton, CircularProgress, Backdrop, Snackbar, TextField, withStyles } from '@material-ui/core';
 import { ImageUpload, VideoUpload } from '../../utils/upload';
 import { TextInput } from '../../utils/textInput';
 import { Counter } from '../../utils/counter';
 import { ContainedButton } from '../../utils/button';
 import { Ingredients } from './ingredients';
 import axios from 'axios';
-import { ALL_INGREDIENTS, CREATE_RECIPE } from '../../api';
+import { CREATE_RECIPE } from '../../api';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 import { primary } from '../../constants/Colors';
 import { useHistory } from 'react-router-dom';
 import { Alert } from '@material-ui/lab'; 
+import { Autocomplete } from '@material-ui/lab';
+import { bold } from '../../constants/Font';
+import { GlobalContext } from '../../store/context/GlobalContext';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +27,32 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const CustomTextField = withStyles({
+    root: {
+      '& label': {
+        color: primary,
+        fontFamily: bold
+      },
+      '& label.Mui-focused': {
+        color: primary,
+        fontFamily: bold
+      },
+      '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+          borderColor: primary,
+        },
+        '&:hover fieldset': {
+          borderColor: primary,
+        },
+        '&.Mui-focused fieldset': {
+          borderColor: primary,
+        },
+      },
+    },
+  })(TextField);
+
 const CreateRecipe = () => {
+    const state = React.useContext(GlobalContext);
     const history = useHistory();
     const classes = useStyles();
     const [images, setImages] = React.useState([]);
@@ -102,13 +130,7 @@ const CreateRecipe = () => {
 		deleteStepImage[index] = {method: method[index].method, stepImage: method[index].stepImage.filter((image) => image !== stepImage)};
 		setMethod(deleteStepImage);
 	};
-    const [data, setData] = React.useState([]);
     const [ingredientsData, setIngredientsData] = React.useState([]);
-    React.useEffect(() => {
-        axios.get(ALL_INGREDIENTS).then((res) => {
-            setData(res.data);
-        })
-    }, []);
     const [recipeName, setRecipeName] = React.useState('');
     const [recipeDescription, setRecipeDescription] = React.useState('');
     const [cookTime, setCookTime] = React.useState('');
@@ -116,6 +138,8 @@ const CreateRecipe = () => {
     const [loading, setLoading] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [error, setError] = React.useState('');
+    const categoryList = ['Curry', 'Rice', 'Bread', 'Desserts'];
+    const [category, setCategory] = React.useState('');
     const saveRecipe = () => {
        setLoading(true);
        if(recipeImage.length > 0 && recipeName.length > 4 && recipeDescription.length > 4 && cookTime.length > 0 && price.length > 0) {
@@ -133,6 +157,7 @@ const CreateRecipe = () => {
             }
             dataValue.append('title', recipeName);
             dataValue.append('description', recipeDescription);
+            dataValue.append('category', category);
             dataValue.append('servings', step);
             dataValue.append('cookTime', cookTime);
             for(var j=0; j < ingredientsArr.length; j++) {
@@ -142,7 +167,12 @@ const CreateRecipe = () => {
             for(var k=0; k < method.length; k++) {
                 dataValue.append('preparation', JSON.stringify(method[k]));
             }
-            axios.post(CREATE_RECIPE, dataValue).then((res) => {
+            axios.post(CREATE_RECIPE, dataValue, {
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":"Bearer " + state.state.token
+                }
+            }).then((res) => {
                history.push({
                    pathname: '/dashboard',
                    state: 'createdRecipe'
@@ -203,10 +233,21 @@ const CreateRecipe = () => {
                 <VideoUpload text="Upload videos" uploadFile={(e) => uploadVideo(e)} />
                 <TextInput onChange={(e) => setRecipeName(e.target.value)} labelName="Enter Recipe Name" style={{margin: 0, marginRight: 20}} labelWidth={145} />
                 <TextInput onChange={(e) => setRecipeDescription(e.target.value)} labelName="Enter Recipe Description" multiline style={{margin: 0, marginRight: 20}} labelWidth={190} />
+                <Autocomplete
+                    id="combo-box-demo"
+                    options={categoryList}
+                    getOptionLabel={(option) => option}
+                    inputValue={category}
+                    onInputChange={(event, newInputValue) => {
+                      setCategory(newInputValue);
+                    }}
+                    style={{ width: 300, margin: 10 }}
+                    renderInput={(params) => <CustomTextField {...params} onChange={(e) => console.log(e)} label="Category" variant="outlined" />}
+                    />
                 <BoldText style={{marginLeft: 10}}>Servings</BoldText>
                 <Counter step={step} setStep={setStep} />
                 <TextInput onChange={(e) => setCookTime(e.target.value)} labelName="Cook Time" style={{margin: 0, width: 200}} placeholder="1 hr 30 mins" labelWidth={82}/>
-                <Ingredients data={data} ingredientsData={ingredientsData} setIngredientsData={setIngredientsData} />
+                <Ingredients ingredientsData={ingredientsData} setIngredientsData={setIngredientsData} />
                 <TextInput onChange={(e) => setPrice(e.target.value)} type="number" labelName="Meal Kit Price" style={{margin: 0, width: 200, marginTop: 10}} labelWidth={105}/>
                 <BoldText style={{marginLeft: 10}}>Preparation</BoldText>
             {method.map((data,index)=>(

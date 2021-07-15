@@ -9,11 +9,8 @@ import { white } from './constants/Colors';
 function App() {
   const [state, dispatch] = useReducer(globalReducer, initialState);
   React.useEffect(() => {
-    const user = localStorage.getItem('sign_in');
-    const parsedUser = JSON.parse(user);
-    if(parsedUser) {
-      dispatch({type: 'SIGN_IN', token: parsedUser.token, user: parsedUser.user});
-    }
+    const token = localStorage.getItem('token');
+      dispatch({type: 'SIGN_IN', token: token});
   },[]);
   const theme = createMuiTheme({
     palette: {

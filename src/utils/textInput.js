@@ -50,7 +50,8 @@ export const TextInput = (props) => {
         multiline,
         placeholder,
         labelWidth,
-        type
+        type,
+        onInput
     } = props;
     const outlinedInputClasses = useOutlinedInputStyles();
     const classes = useStyles();
@@ -64,6 +65,7 @@ export const TextInput = (props) => {
                         classes={outlinedInputClasses}
                         onChange={onChange}
                         type={type}
+                        onInput={onInput}
                         multiline={multiline}
                         startAdornment={startAdornment}
                         endAdornment={endAdornment}

@@ -1,7 +1,6 @@
 export const initialState = {
     token: null,
     dark: false,
-    user: {}
 }
 
 export const globalReducer = (state, action) => {
@@ -10,13 +9,11 @@ export const globalReducer = (state, action) => {
             return {
                 ...state,
                 token: action.token,
-                user: action.user
             };
         case 'SIGN_OUT':
             return {
                 ...state,
-                token: null,
-                user: {}
+                token: null
             }
         case 'DARK_MODE':
             return {
@@ -27,11 +24,6 @@ export const globalReducer = (state, action) => {
             return {
                 ...state,
                 dark: false
-            }
-        case 'GOOGLE_USER':
-            return {
-                ...state,
-                user: action.user
             }
         default:
             return state;
