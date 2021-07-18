@@ -17,7 +17,7 @@ import { bold, light } from '../constants/Font';
 import { IconButton, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
-import { CHANGE_ORDER_STATUS, DOWNLOAD_ORDER } from '../api';
+import { CHANGE_ORDER_STATUS } from '../api';
 import moment from 'moment';
 import { primary, white } from '../constants/Colors';
 
@@ -293,7 +293,6 @@ export const OrderTable = (props) => {
                       <TableCell style={{fontFamily: light}}>{row.status}</TableCell>
                       <TableCell style={{fontFamily: light}}>{row.paid.toString()}</TableCell>
                       <TableCell style={{fontFamily: light}}>{moment(row.createdAt).format('LLL')}</TableCell>
-                      <TableCell><a href={DOWNLOAD_ORDER(row._id)} target="_blank" download style={{textDecoration: 'none', color: primary, fontFamily: bold}}>Download</a></TableCell>
                     </TableRow>
                   );
                 })}
