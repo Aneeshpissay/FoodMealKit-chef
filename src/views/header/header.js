@@ -9,6 +9,11 @@ import { primary, black, white, grey } from '../../constants/Colors';
 import { bold } from '../../constants/Font';
 import {withRouter} from 'react-router';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { GET_PROFILE } from '../../api';
+import { GlobalContext } from '../../store/context/GlobalContext';
+import { BoldText } from '../../utils/text';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -89,7 +94,10 @@ const CustomButton = withStyles((theme) => ({
 }))(Button);
 
 const Header = props => {
+  const state = React.useContext(GlobalContext);
   const {history, children} = props;
+  const params = useLocation();
+  const pathname = params.pathname.split('/');
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
@@ -101,6 +109,31 @@ const Header = props => {
     setOpen(false);
   };
   const [itemIndex, setItemIndex] = React.useState(0);
+  React.useEffect(() => {
+    if(pathname[1] === 'dashboard') {
+      setItemIndex(0);
+    }
+    else if(pathname[1] === 'create-recipe') {
+      setItemIndex(1);
+    }
+    else if(pathname[1] === 'orders'){
+      setItemIndex(2);
+    }
+    else {
+      setItemIndex(0);
+    }
+    getUser();
+  }, [pathname]);
+  const [user, setUser] = React.useState({});
+  const getUser = async () => {
+    const token = localStorage.getItem('token');
+    await axios.get(GET_PROFILE, {
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer " + token
+        }
+    }).then((res) => setUser(res.data));
+  }
   const itemsList = [
     {
       text: "Create Recipe",
@@ -119,6 +152,11 @@ const Header = props => {
       }
     }
   ]
+  const removeToken = () => {
+    state.dispatch({type: 'SIGN_OUT'});
+    localStorage.removeItem('token');
+    history.push('/login');
+  }
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -139,9 +177,9 @@ const Header = props => {
             <MenuIcon />
           </IconButton>
           {/* <img src="https://procivil.in/assets/img/logox.png" alt="Procivil"/> */}
-          <div style={{marginLeft: 'auto'}}>
-              <CustomButton>Logout</CustomButton>
-              <CustomButton>Aneesh Pissay</CustomButton>
+          <div style={{marginLeft: 'auto', display: 'flex'}}>
+              <CustomButton onClick={removeToken}>Logout</CustomButton>
+              {user?.user && <BoldText style={{color: primary, alignSelf: 'center', marginLeft: 10, fontSize: 15}}>{user.user.username}</BoldText>}
           </div>
         </Toolbar>
       </AppBar>

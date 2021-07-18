@@ -34,7 +34,13 @@ const Dashboard = () => {
     }, [state]);
     const getRecipes = () => {
         setLoading(true);
-        axios.get(GET_RECIPE).then((res) => {
+        const token = localStorage.getItem('token');
+        axios.get(GET_RECIPE, {
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":"Bearer " + token
+            }
+        }).then((res) => {
             setPublished(res.data.publishedRecipe);
             setSaved(res.data.savedRecipe);
         }).finally(() => setLoading(false));

@@ -9,8 +9,10 @@ import { bold } from '../../constants/Font';
 import { SEND_OTP, PHONE_LOGIN, GET_PROFILE } from '../../api';
 import axios from 'axios';
 import { GlobalContext } from '../../store/context/GlobalContext';
+import { useHistory } from 'react-router-dom';
 
 const Login = () => {
+    const history = useHistory();
     const [phone, setPhone] = useState('');
     const state = useContext(GlobalContext);
     const [otp, setOtp] = useState('');
@@ -42,6 +44,7 @@ const Login = () => {
                     if(res.data.user.role === 'chef') {
                         state.dispatch({type: 'SIGN_IN', token: resp.data.token});
                         localStorage.setItem('token', resp.data.token);
+                        history.push('/dashboard');
                     }
                     else {
                         setOpen(true)

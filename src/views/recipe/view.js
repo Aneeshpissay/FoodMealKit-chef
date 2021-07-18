@@ -1,8 +1,6 @@
 import { Grid, Paper, Divider, Backdrop, CircularProgress, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { OutlinedButton } from '../../utils/button';
-import PrintIcon from '@material-ui/icons/Print';
-import ShareIcon from '@material-ui/icons/Share';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import { BoldText, LightText, MediumText } from '../../utils/text';
 import { grey, primary } from '../../constants/Colors';
@@ -11,7 +9,7 @@ import StopIcon from '@material-ui/icons/Stop';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { RECIPE_BY_ID } from '../../api';
-import { EnhancedTable } from '../../utils/table';
+import { RecipeTable } from '../../utils/recipeTable';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -60,12 +58,6 @@ const RecipeView = () => {
                 </Grid>
                 <Grid container>
                     <BoldText style={{marginLeft: 10, marginTop: 10, fontSize: 20}}>{recipeView.title}</BoldText>
-                    <OutlinedButton style={{marginRight: 10, marginTop: 10, marginLeft: 'auto'}} variant="outlined" color="secondary" startIcon={<PrintIcon />}>
-                        Print
-                    </OutlinedButton>
-                    <OutlinedButton style={{marginRight: 10, marginTop: 10}} variant="outlined" color="secondary" startIcon={<ShareIcon />}>
-                        Share
-                    </OutlinedButton>
                 </Grid>
                 <LightText style={{marginTop: 20, marginLeft: 10}}>{recipeView.description}</LightText>
                 <Divider style={{marginTop: 10, marginLeft: 10, marginRight: 10}} />
@@ -76,7 +68,7 @@ const RecipeView = () => {
                 <BoldText style={{marginTop: 10, marginLeft: 10, fontSize: 18}}>
                     Cook Time: {recipeView.cookTime}
                 </BoldText>
-                    {recipeView?.ingredients?.length > 0 && <EnhancedTable title="Ingredients" data={recipeView.ingredients} columns={columns} />}
+                    {recipeView?.ingredients?.length > 0 && <RecipeTable title="Ingredients" data={recipeView.ingredients} columns={columns} />}
                 </Grid>
             <Divider style={{marginTop: 10, marginLeft: 10, marginRight: 10}} />
             <BoldText style={{marginTop: 10, marginLeft: 10, fontSize: 18}}>

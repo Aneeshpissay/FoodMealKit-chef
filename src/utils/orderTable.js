@@ -13,7 +13,13 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import { bold } from '../constants/Font';
+import { bold, light } from '../constants/Font';
+import { IconButton, Tooltip } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import axios from 'axios';
+import { CHANGE_ORDER_STATUS } from '../api';
+import moment from 'moment';
+import { primary, white } from '../constants/Colors';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -49,11 +55,12 @@ function EnhancedTableHead(props) {
 
   return (
     <TableHead>
-      <TableRow>
+      <TableRow style={{backgroundColor: primary}}>
         {columns.map((headCell) => (
           <TableCell
             key={headCell.id}
             padding={'default'}
+            style={{color: white, fontFamily: bold}}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -108,8 +115,18 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, title } = props;
-
+  const { numSelected, title, selected, status, setLoading, setStatusTitle, setOpen } = props;
+  const changeStatus = () => {
+    setLoading(true);
+    const data = {
+      orderIds: selected,
+      status: status
+    }
+    axios.put(CHANGE_ORDER_STATUS, data).then((res) => {
+      setStatusTitle(`Orders added to ${status}`);
+      setOpen(true);
+    }).catch((err) => setStatusTitle('Error')).finally(() => setLoading(false));
+  }
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -117,14 +134,21 @@ const EnhancedTableToolbar = (props) => {
       })}
     >
       {numSelected > 0 ? (
-        <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+          <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
           {numSelected} selected
-        </Typography>
+           </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
           {title}
         </Typography>
       )}
+      {numSelected > 0 && status !== 'Done' && status !== 'Cancelled' &&
+        <Tooltip title={`Add to ${status}`}>
+           <IconButton onClick={changeStatus}>
+             <AddIcon />
+           </IconButton>
+         </Tooltip>
+      }
     </Toolbar>
   );
 };
@@ -157,15 +181,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EnhancedTable = (props) => {
+export const OrderTable = (props) => {
   const {
       title,
       data,
-      columns
+      columns,
+      status,
+      setLoading,
+      setStatusTitle,
+      setOpen
   } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -221,7 +249,7 @@ export const EnhancedTable = (props) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
-        <EnhancedTableToolbar numSelected={selected.length} title={title} />
+        <EnhancedTableToolbar numSelected={selected.length} setOpen={setOpen} setLoading={setLoading} setStatusTitle={setStatusTitle} selected={selected} status={status} title={title} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -243,23 +271,28 @@ export const EnhancedTable = (props) => {
               {stableSort(data, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row._id);
                   const labelId = `${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row._id)}
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row._id}
                       selected={isItemSelected}
                     >
-                      <TableCell component="th" id={labelId} scope="row" padding="default">
-                        {row.name}
+                      <TableCell component="th" id={labelId} scope="row" padding="default" style={{fontFamily: light}}>
+                        {row.orderId}
                       </TableCell>
-                      <TableCell>{row.quantity}</TableCell>
-                      <TableCell>{row.measurement}</TableCell>
+                      <TableCell style={{fontFamily: light}}>
+                        {row.author.username}
+                      </TableCell>
+                      <TableCell style={{fontFamily: light}}>{row.author.phone}</TableCell>
+                      <TableCell style={{fontFamily: light}}>{row.status}</TableCell>
+                      <TableCell style={{fontFamily: light}}>{row.paid.toString()}</TableCell>
+                      <TableCell style={{fontFamily: light}}>{moment(row.createdAt).format('LLL')}</TableCell>
                     </TableRow>
                   );
                 })}
