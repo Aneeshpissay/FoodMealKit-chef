@@ -19,3 +19,4 @@ export const PHONE_LOGIN = (phone, otp, username) => `${BASE_URL}/login/${phone}
 export const GET_PROFILE = `${BASE_URL}/profile`;
 export const GET_ORDERS = `${BASE_URL}/orders/list`;
 export const CHANGE_ORDER_STATUS = `${BASE_URL}/orders/status`;
+export const DOWNLOAD_ORDER = (id) => `${BASE_URL}/orders/download/${id}`;

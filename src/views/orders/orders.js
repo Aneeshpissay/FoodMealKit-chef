@@ -41,6 +41,7 @@ const Orders = () => {
         { id: 'status', label: 'Status' },
         { id: 'paid', label: 'Paid' },
         { id: 'orderDate', label: 'Order Date' },
+        { id: 'download', label: 'Download Orders' }
     ];
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
