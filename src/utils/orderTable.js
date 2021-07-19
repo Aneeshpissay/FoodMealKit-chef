@@ -17,7 +17,7 @@ import { bold, light } from '../constants/Font';
 import { IconButton, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
-import { CHANGE_ORDER_STATUS } from '../api';
+import { CHANGE_ORDER_STATUS, GET_PROFILE } from '../api';
 import moment from 'moment';
 import { primary, white } from '../constants/Colors';
 
@@ -245,7 +245,29 @@ export const OrderTable = (props) => {
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
+  React.useEffect(() => {
+    getUser();
+  }, []);
+  const [user, setUser] = React.useState({});
+  const getUser = async () => {
+    const token = localStorage.getItem('token');
+    await axios.get(GET_PROFILE, {
+        headers:{
+          "Content-Type":"application/json",
+          "Authorization":"Bearer " + token
+        }
+    }).then((res) => setUser(res.data));
+  }
+  const getItems = (items, name) => {
+    for(var i = 0; i < items.length; i++) {
+      if(user?.user?._id === items[i].author._id) {
+        return items[i][name];
+      }
+      else {
+        return items[i][name];
+      }
+    }
+  }
   return (
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
@@ -290,6 +312,10 @@ export const OrderTable = (props) => {
                         {row.author.username}
                       </TableCell>
                       <TableCell style={{fontFamily: light}}>{row.author.phone}</TableCell>
+                      <TableCell style={{fontFamily: light}}>{getItems(row.item, 'title')}</TableCell>
+                      <TableCell style={{fontFamily: light}}>{getItems(row.item, 'servings')}</TableCell>
+                      <TableCell style={{fontFamily: light}}>{getItems(row.item, 'quantity')}</TableCell>                      
+                      <TableCell style={{fontFamily: light}}>{getItems(row.item, 'price')}</TableCell>
                       <TableCell style={{fontFamily: light}}>{row.status}</TableCell>
                       <TableCell style={{fontFamily: light}}>{row.paid.toString()}</TableCell>
                       <TableCell style={{fontFamily: light}}>{moment(row.createdAt).format('LLL')}</TableCell>

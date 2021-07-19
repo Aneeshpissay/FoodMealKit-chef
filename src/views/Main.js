@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Login from './auth/login';
 import Header from './header/header';
 import Dashboard from './dashboard/dashboard';
@@ -6,11 +6,9 @@ import View from './recipe/view';
 import CreateRecipe from './recipe/create';
 import Orders from './orders/orders';
 import {Switch, Route, BrowserRouter, Redirect} from 'react-router-dom';
-import { GlobalContext } from '../store/context/GlobalContext';
 
 const Main = () => {
-    const state = useContext(GlobalContext);
-    const token = state.state.token;
+    const token = localStorage.getItem('token');
     return(
         <BrowserRouter>
             {token ? 
@@ -27,7 +25,7 @@ const Main = () => {
             </Header> : 
             <Switch>
                 <Route exact path="/">
-                    <Redirect to="/login" />
+                    <Redirect to='/login' />
                 </Route>
                 <Route exact path="/login" render={props => <Login {...props} />} />
             </Switch>}

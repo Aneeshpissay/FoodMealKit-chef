@@ -36,8 +36,12 @@ const Orders = () => {
     }, [open]);
     const columns = [
         { id: 'id', label: 'Order ID' },
-        { id: 'name', label: 'Name' },
+        { id: 'name', label: 'User Name' },
         { id: 'phone', label: 'Phone number'},
+        { id: 'item', label: 'Item' },
+        { id: 'servings', label: 'Servings' },
+        { id: 'quantity', label: 'Quantity' },
+        { id: 'price', label: 'Price' },
         { id: 'status', label: 'Status' },
         { id: 'paid', label: 'Paid' },
         { id: 'orderDate', label: 'Order Date' },

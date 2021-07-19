@@ -122,8 +122,10 @@ const Header = props => {
     else {
       setItemIndex(0);
     }
-    getUser();
   }, [pathname]);
+  React.useEffect(() => {
+    getUser();
+  }, []);
   const [user, setUser] = React.useState({});
   const getUser = async () => {
     const token = localStorage.getItem('token');
