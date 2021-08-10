@@ -1,7 +1,7 @@
 import React from 'react';
 import { BoldText } from '../../utils/text';
 import { Paper, Divider, makeStyles, Grid, IconButton, CircularProgress, Backdrop, Snackbar, TextField, withStyles } from '@material-ui/core';
-import { ImageUpload, VideoUpload } from '../../utils/upload';
+import { ImageUpload } from '../../utils/upload';
 import { TextInput } from '../../utils/textInput';
 import { Counter } from '../../utils/counter';
 import { ContainedButton } from '../../utils/button';
@@ -57,7 +57,7 @@ const CreateRecipe = () => {
     const classes = useStyles();
     const [images, setImages] = React.useState([]);
     const [recipeImage, setRecipeImages] = React.useState([]);
-    const [video, setVideo] = React.useState([]);
+    // const [video, setVideo] = React.useState([]);
     const uploadImages = async (e) => {
         setRecipeImages([...recipeImage, ...e.target.files]);
         const myFn = (files) => {
@@ -87,9 +87,9 @@ const CreateRecipe = () => {
 		deleteImage = images.filter((image) => image !== data);
 		setImages(deleteImage);
 	};
-    const uploadVideo = (event) => {
-        setVideo(event.target.files)
-    }
+    // const uploadVideo = (event) => {
+    //     setVideo(event.target.files)
+    // }
     const [step, setStep] = React.useState(2);
     const [method, setMethod] = React.useState([
         {
@@ -151,9 +151,6 @@ const CreateRecipe = () => {
             const dataValue = new FormData();
             for(var i=0; i < recipeImage.length; i++) {
                 dataValue.append('recipeImage', recipeImage[i]);
-            }
-            for(var a=0; a < video.length; a++) {
-                dataValue.append('recipeVideo', video[a]);
             }
             dataValue.append('title', recipeName);
             dataValue.append('description', recipeDescription);
@@ -230,8 +227,8 @@ const CreateRecipe = () => {
                     ))}
                 </Grid>
             <Divider />
-                <VideoUpload text="Upload videos" uploadFile={(e) => uploadVideo(e)} />
-                <TextInput onChange={(e) => setRecipeName(e.target.value)} labelName="Enter Recipe Name" style={{margin: 0, marginRight: 20}} labelWidth={145} />
+                {/* <VideoUpload text="Upload videos" uploadFile={(e) => uploadVideo(e)} /> */}
+                <TextInput value={recipeName} onChange={(e) => setRecipeName(e.target.value)} labelName="Enter Recipe Name" style={{margin: 0, marginRight: 20}} labelWidth={145} />
                 <TextInput onChange={(e) => setRecipeDescription(e.target.value)} labelName="Enter Recipe Description" multiline style={{margin: 0, marginRight: 20}} labelWidth={190} />
                 <Autocomplete
                     id="combo-box-demo"

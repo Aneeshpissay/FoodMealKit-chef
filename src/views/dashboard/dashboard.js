@@ -4,7 +4,7 @@ import { RecipeCard } from '../../utils/card';
 import { BoldText } from '../../utils/text';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { GET_RECIPE, PUBLISH_RECIPE } from '../../api';
+import { GET_RECIPE, PUBLISH_RECIPE, RECIPE_BY_ID } from '../../api';
 import { primary } from '../../constants/Colors';
 import { Alert } from '@material-ui/lab'; 
 import { OutlinedButton } from '../../utils/button';
@@ -52,6 +52,12 @@ const Dashboard = () => {
             getRecipes();
         });
     };
+    const handleDelete = (id) => {
+        setLoading(true);
+        axios.delete(RECIPE_BY_ID(id)).then((res) => {
+            getRecipes();
+        });
+    };
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
           return;
@@ -89,6 +95,9 @@ const Dashboard = () => {
                         </Link>
                         <Grid container justify="center" style={{marginBottom: 10}}>
                             <OutlinedButton variant="outlined" onClick={() => handlePublishRecipe(save._id)}>Publish</OutlinedButton>
+                        </Grid>
+                        <Grid container justify="center" style={{marginBottom: 10}}>
+                            <OutlinedButton variant="outlined" onClick={() => handleDelete(save._id)}>Delete</OutlinedButton>
                         </Grid>
                     </Grid>
                 ))}

@@ -33,7 +33,7 @@ const Orders = () => {
     }
     useEffect(() => {
         getOrders();
-    }, [open]);
+    }, [statusTitle]);
     const columns = [
         { id: 'id', label: 'Order ID' },
         { id: 'name', label: 'User Name' },
